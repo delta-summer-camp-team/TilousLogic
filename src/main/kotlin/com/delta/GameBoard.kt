@@ -33,11 +33,23 @@ class GameBoard(val size: Int) {
      * To set cells inside methods of this class, use `this[i, j] = ...`.
      */
     operator fun set(row: Int, col: Int, player: PlayerID) {
-        board[row][col] = player
+        if (freeCell(row, col)) {
+            board[row][col] = player
+        }
+        else {
+            throw IllegalArgumentException("Cell is not free")
+        }
         // TODO this is unsafe, fix it!
     }
 
-    fun freeCell(raw: Int, col: Int): Nothing = TODO()
+    private fun freeCell(raw: Int, col: Int) : Boolean {
+        if (board[raw][col] == null) {
+            return true
+        }
+        else {
+            return false
+        }
+    }
     fun getNeighbors(row: Int, col: Int): List<Pair<Int, Int>> = TODO()
 
     fun countFriendlyNeighbors(row: Int, col: Int, player: PlayerID) : Int = TODO()
