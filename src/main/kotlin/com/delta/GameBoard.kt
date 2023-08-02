@@ -41,14 +41,47 @@ class GameBoard(val size: Int) {
     }
 
     private fun freeCell(raw: Int, col: Int) : Boolean = get(raw, col) == null
-    fun getNeighbors(row: Int, col: Int): List<Pair<Int, Int>> = TODO()
+    fun getNeighbors(row: Int, col: Int): List<Pair<Int, Int>> {
+        return listOf(
+            Pair(row - 1, col),
+            Pair(row + 1, col),
+            Pair(row, col - 1),
+            Pair(row, col + 1),
+        ).filter { (x, y) -> isValidCoordinate(x, y) }
+    }
 
-    fun countFriendlyNeighbors(row: Int, col: Int, player: PlayerID) : Int = TODO()
-    fun countFriendlyNeighborsCorners(row: Int, col: Int, player: PlayerID): Int = TODO()
-    fun countEnemyNeighbors(row: Int, col: Int, player: PlayerID): Int = TODO()
+    fun getAllNeighbors(row: Int, col: Int): List<Pair<Int, Int>> {
+        return listOf(
+            Pair(row - 1, col),
+            Pair(row + 1, col),
+            Pair(row, col - 1),
+            Pair(row, col + 1),
+            Pair(row - 1, col - 1),
+            Pair(row + 1, col + 1),
+            Pair(row - 1, col + 1),
+            Pair(row + 1, col - 1),
+        ).filter { (x, y) -> isValidCoordinate(x, y) }
+    }
 
-    fun isSurroundedWithFriendly(row: Int, col: Int): Boolean = TODO()
-    fun isCorner(row: Int, col: Int): Boolean = TODO()
+    fun countFriendlyNeighbors(row: Int, col: Int, player: PlayerID) : Int {
+        return getNeighbors(row, col).count { (x, y) -> get(x, y) == player }
+    }
+    fun countFriendlyNeighborsCorners(row: Int, col: Int, player: PlayerID): Int {
+        return getAllNeighbors(row, col).count { (x, y) -> get(x, y) == player}
+    }
+    fun countEnemyNeighbors(row: Int, col: Int, player: PlayerID): Int{
+        return getNeighbors(row, col).count { (x, y) -> get(x, y) != player && get(x, y) != null}
+    }
+
+    fun isSurroundedWithFriendly(row: Int, col: Int, player: PlayerID): Boolean {
+        return countFriendlyNeighborsCorners(row, col, player ) == 8
+    }
+    fun isCorner(row: Int, col: Int): Boolean {
+        return (row == 0 && col == 0) ||
+                (row == 0 && col == size - 1) ||
+                (row == size - 1 && col == 0) ||
+                (row == size - 1 && col == size - 1)
+    }
 
     fun toJson(): String = Gson().toJson(this)
     companion object {
