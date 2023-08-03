@@ -4,13 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8268dabb-b4ad-4fdc-9181-cc5946d45380" name="Changes" comment="Add publishing and dependency">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/delta/GameBoard.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/delta/PlayerID.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/delta/PlayerState.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/delta/Tilous.kt" afterDir="false" />
+    <list default="true" id="8268dabb-b4ad-4fdc-9181-cc5946d45380" name="Changes" comment="Added Documentation. Fixed isSurroundedByFriendlies.&#10;&#10;GameBoard.kt has been tested and works as Intended.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Main.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/delta/GameBoard.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/delta/GameBoard.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,6 +31,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "George",
     "last_opened_file_path": "C:/Users/Anton Ablov/IdeaProjects/TilousLogic/src/main/kotlin"
   }
 }]]></component>
@@ -91,7 +88,23 @@
       <option name="project" value="LOCAL" />
       <updated>1689599261417</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Uhhh.... Built the entire GameBoard.kt&#10;&#10;Sorry everyone.">
+      <option name="closed" value="true" />
+      <created>1690983569832</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1690983569832</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Added Documentation. Fixed isSurroundedByFriendlies.&#10;&#10;GameBoard.kt has been tested and works as Intended.">
+      <option name="closed" value="true" />
+      <created>1691050254355</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1691050254355</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -108,6 +121,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Create empty project" />
     <MESSAGE value="Add publishing and dependency" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add publishing and dependency" />
+    <MESSAGE value="Uhhh.... Built the entire GameBoard.kt&#10;&#10;Sorry everyone." />
+    <MESSAGE value="Added Documentation. Fixed isSurroundedByFriendlies.&#10;&#10;GameBoard.kt has been tested and works as Intended." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added Documentation. Fixed isSurroundedByFriendlies.&#10;&#10;GameBoard.kt has been tested and works as Intended." />
   </component>
 </project>
