@@ -33,7 +33,20 @@ class Tilous(private val board: GameBoard) {
     fun isProductive(row: Int, col: Int): Boolean = TODO()
     fun isSuperStable(row: Int, col: Int): Boolean = TODO()
 
-    fun getDefencePoints(row: Int, col: Int): Int = TODO()
+    fun getDefencePoints(row: Int, col: Int): Int {
+        val curr = getCell(row, col) ?: return 1
+
+        /*if (curr == null) return 0
+        var count = 0
+        for (i in -1..1) {
+            for (j in -1..1) {
+                if (getCell(row + i, col + j) === curr) count++
+            }
+        }
+        return Math.max(0, count - 2) + 1*/
+
+        return Math.max(0, board.countFriendlyNeighborsCorners(row, col, curr) - 2) + 1;
+    }
 
     private fun countCellsWithCondition(condition: (Int, Int) -> Boolean): Int = TODO()
     fun countProductiveCells(player: PlayerID): Int = TODO()
