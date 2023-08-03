@@ -29,8 +29,16 @@ class Tilous(private val board: GameBoard) {
     // Game checks and info
     fun isValidCellToPlace(row: Int, col: Int, player: PlayerID): Boolean = TODO()
 
-    fun isProductive(row: Int, col: Int, player: PlayerID): Boolean = TODO()
-    fun isProductive(row: Int, col: Int): Boolean = TODO()
+    fun isProductive(row: Int, col: Int, player: PlayerID): Boolean {
+         // Works
+
+        val cellOwner = getCell(row, col)
+        return cellOwner?.let { board.countFriendlyNeighbors(row, col, it) } == 1
+    }
+    fun isProductive(row: Int, col: Int): Boolean {
+        val cellOwner = getCell(row, col)
+        return cellOwner?.let { board.countFriendlyNeighbors(row, col, it) } == 1
+    }
     fun isSuperStable(row: Int, col: Int): Boolean = TODO()
 
     fun getDefencePoints(row: Int, col: Int): Int {
@@ -49,7 +57,17 @@ class Tilous(private val board: GameBoard) {
     }
 
     private fun countCellsWithCondition(condition: (Int, Int) -> Boolean): Int = TODO()
-    fun countProductiveCells(player: PlayerID): Int = TODO()
+    fun countProductiveCells(player: PlayerID): Int {
+        var totalProductiveCells = 0
+        for (x in 0 until board.size) {
+            for (y in 0 until board.size) {
+                if (isProductive(x, y, player)) {
+                    totalProductiveCells++
+                }
+            }
+        }
+        return totalProductiveCells
+    }
     fun countFreeCells(): Int = TODO()
     fun countFriendlyCells(player: PlayerID): Int = TODO()
 
