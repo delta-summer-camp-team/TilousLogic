@@ -24,7 +24,35 @@ class Tilous(private val board: GameBoard) {
 
     fun getNextPlayer(): PlayerID = TODO()
 
-    fun getWinner(): PlayerID? = TODO()
+    fun getWinner(): PlayerID? {
+        val playingPlayers = playersStates.filterValues { it == PlayerState.PLAYING }.keys.toList()
+        val lostPlayers = playersStates.filterValues { it == PlayerState.LOST }.keys.toList()
+
+        return when {
+            playingPlayers.isEmpty() -> null // No player is playing, no winner
+            playingPlayers.size == 1 -> {
+                // Only one player remaining, that player wins
+                val winner = playingPlayers[0]
+                playersStates[winner] = PlayerState.WON
+                gameIsOver = true
+                winner
+            }
+
+            else -> {
+                // Check if all players except one have lost
+                val remainingPlayers = playingPlayers - lostPlayers
+                if (remainingPlayers.size == 1) {
+                    val winner = remainingPlayers[0]
+                    playersStates[winner] = PlayerState.WON
+                    gameIsOver = true
+                    winner
+                } else {
+                    null // More than one player remaining, no winner yet
+                }
+            }
+        }
+    }
+
 
     // Game checks and info
     fun isValidCellToPlace(row: Int, col: Int, player: PlayerID): Boolean = TODO()
