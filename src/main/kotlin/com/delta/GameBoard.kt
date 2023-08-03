@@ -90,6 +90,10 @@ class GameBoard(val size: Int) {
         // Needed to add PlayerID to this function, WORKS
         return countFriendlyNeighborsCorners(row, col, player) == getCornersNeighbors(row, col).size
     }
+
+    fun countFreeNeighbors(row: Int, col: Int): Int {
+        return getNeighbors(row, col).count { (x, y) -> freeCell(x, y) }
+    }
     fun isCorner(row: Int, col: Int): Boolean {
         return (row == 0 && col == 0) ||
                 (row == 0 && col == size - 1) ||
