@@ -26,6 +26,10 @@ class Tilous(private val board: GameBoard) {
 
     fun getWinner(): PlayerID? = TODO()
 
+    fun addResources(player: PlayerID) : Int{
+        return 1 + countProductiveCells(player)
+    }
+
     // Game checks and info
     fun isValidCellToPlace(row: Int, col: Int, player: PlayerID): Boolean = TODO()
 
