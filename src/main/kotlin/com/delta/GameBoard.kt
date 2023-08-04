@@ -33,11 +33,8 @@ class GameBoard(val size: Int) {
      * To set cells inside methods of this class, use `this[i, j] = ...`.
      */
     operator fun set(row: Int, col: Int, player: PlayerID) {
-        if (isValidCoordinate(row, col)){  // Works as intended
+        if (isValidCoordinate(row, col)) // Works as intended
             board[row][col] = player
-        } else {
-            throw IllegalArgumentException("Can't place here.") // TODO: Add handling to this exception
-        }
     }
 
     private fun freeCell(raw: Int, col: Int) : Boolean = get(raw, col) == null //Works as intended
@@ -64,9 +61,10 @@ class GameBoard(val size: Int) {
             Pair(row + 1, col - 1),
         ).filter { (x, y) -> isValidCoordinate(x, y) }
     }
-/**
- * Returns a number of friendly neighbors.
- * */
+
+    /**
+     * Returns a number of friendly neighbors.
+     * */
     fun countFriendlyNeighbors(row: Int, col: Int, player: PlayerID) : Int {
         return getNeighbors(row, col).count { (x, y) -> get(x, y) == player }
     }
