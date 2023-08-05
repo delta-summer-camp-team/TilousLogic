@@ -89,12 +89,15 @@ class Tilous(private val board: GameBoard) {
     fun countFreeCells(): Int = TODO()
     fun countFriendlyCells(row: Int, col:Int,player: PlayerID): Int {
         var friendlyNeighbours = 0
-        if (row != 0) && (getCell(row - 1, col) == player){
+        if (row != 0) && (getCell(row - 1, col) == player)
             friendlyNeighbours += 1
-        }
-        if (row != (board.size-1)) && (getCell(row+1, col)){
+        if (row != (board.size-1)) && (getCell(row + 1, col) == player)
             friendlyNeighbours += 1
-        }
+        if (col != 0) && (getCell(row, col - 1) == player)
+            friendlyNeighbours += 1
+        if (col != (board.size-1)) && (getCell(row, col + 1) == player)
+            friendlyNeighbours += 1
+        return friendlyNeighbours
     }
 
     fun getSuperStableCells(player: PlayerID): List<Pair<Int, Int>> = TODO("Later...")
