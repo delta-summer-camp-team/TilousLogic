@@ -1,5 +1,5 @@
 package com.delta
-helllo world from nikita
+
 import com.google.gson.Gson
 
 class Tilous(private val board: GameBoard) {
@@ -21,10 +21,15 @@ class Tilous(private val board: GameBoard) {
     // Info about players
     fun getPlayerResources() = playersResources.toMap()
     fun getPlayerStates() = playersStates.toMap()
-
-    fun getNextPlayer(): PlayerID = TODO()
-
-    fun getWinner(): PlayerID? = TODO()
+    fun isInGame () : List<PlayerID> = playersStates.filter {it.value == PlayerState.PLAYING}.keys.toList()
+    fun getCurrentPlayer (): PlayerID = currentPlayer
+    fun getNextPlayer(): PlayerID {
+        val currentIndex = isInGame().indexOf(currentPlayer)
+        val nextIndex = (currentIndex + 1) % isInGame().size
+        return isInGame()[nextIndex]
+        }
+    
+    fun getWinner(): PlayerID = TODO()
 
     // Game checks and info
     fun isValidCellToPlace(row: Int, col: Int, player: PlayerID): Boolean = TODO()
