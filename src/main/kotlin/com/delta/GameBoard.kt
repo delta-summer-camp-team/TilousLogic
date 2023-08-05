@@ -78,7 +78,7 @@ class GameBoard(val size: Int) {
      * Returns a number of enemy neighbors on the borders of this tile.
      * */
     fun countEnemyNeighbors(row: Int, col: Int, player: PlayerID): Int{
-        return getNeighbors(row, col).count { (x, y) -> get(x, y) != player && get(x, y) != null}
+        return getCornersNeighbors(row, col).count { (x, y) -> get(x, y) != player && get(x, y) != null}
     }
     /**
      * Returns a boolean if this tile is surrounded by friendly tiles.
