@@ -87,7 +87,15 @@ class Tilous(private val board: GameBoard) {
         return totalProductiveCells
     }
     fun countFreeCells(): Int = TODO()
-    fun countFriendlyCells(player: PlayerID): Int = TODO()
+    fun countFriendlyCells(row: Int, col:Int,player: PlayerID): Int {
+        var friendlyNeighbours = 0
+        if (row != 0) && (getCell(row - 1, col) == player){
+            friendlyNeighbours += 1
+        }
+        if (row != (board.size-1)) && (getCell(row+1, col)){
+            friendlyNeighbours += 1
+        }
+    }
 
     fun getSuperStableCells(player: PlayerID): List<Pair<Int, Int>> = TODO("Later...")
     fun getUnstableCells(player: PlayerID): List<Pair<Int, Int>> = TODO("Later...")
