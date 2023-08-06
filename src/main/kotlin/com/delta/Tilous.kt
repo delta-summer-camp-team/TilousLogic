@@ -1,6 +1,7 @@
 package com.delta
 
 import com.google.gson.Gson
+import java.util.LinkedList
 
 class Tilous(private val board: GameBoard) {
     private val playersResources = PlayerID.values().associateWith { 1 }.toMutableMap()
@@ -39,7 +40,11 @@ class Tilous(private val board: GameBoard) {
         val cellOwner = getCell(row, col)
         return cellOwner?.let { board.countFriendlyNeighbors(row, col, it) } == 1
     }
-    fun isSuperStable(row: Int, col: Int): Boolean = TODO()
+    fun isSuperStable(row: Int, col: Int): Boolean {
+        val curr = getCell(row, col) ?: return false
+        return (row == 0 || row == getBoardSize() - 1) && (col == 0 || col == getBoardSize() - 1)
+                || board.countFriendlyNeighborsCorners(row, col, curr) == 8
+    }
 
     fun getDefencePoints(row: Int, col: Int): Int {
         val curr = getCell(row, col) ?: return 0
@@ -103,7 +108,44 @@ class Tilous(private val board: GameBoard) {
     fun finishPlayersTurn(player: PlayerID): Boolean = false
 
     // Internal game actions
-    private fun removeUnstableCells(): Nothing = TODO()
+    fun removeUnstableCells() {
+        val bsz = getBoardSize();
+        val markers = GameBoard(bsz);
+
+        // Checking all 4 bases
+        for (i in 0..1) {
+            for (j in 0..1) {
+                val startRow = i * (bsz - 1)
+                val startCol = j * (bsz - 1)
+                val baseOwner = getCell(startRow, startCol) ?: continue
+
+                val queue: LinkedList<Pair<Int, Int>> = LinkedList()
+                markers[startRow, startCol] = baseOwner
+                queue.add(Pair(startRow, startCol))
+                while (queue.size > 0) {
+                    val (currRow, currCol) = queue.first()
+                    queue.remove()
+
+                    // Checking adjacent elements
+                    for (ai in -1..1) {
+                        for (aj in -1..1) {
+                            if ((ai + aj) % 2 == 0) continue
+                            val adjRow = currRow + ai
+                            val adjCol = currCol + aj
+
+                            if (markers[adjRow, adjCol] != baseOwner && getCell(adjRow, adjCol) == baseOwner) {
+                                markers[adjRow, adjCol] = baseOwner
+                                queue.add(Pair(adjRow, adjCol))
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        board.printMe()
+        markers.printMe()
+    }
     private fun updatePlayerStates(): Nothing = TODO()
 
     fun toJson() = Gson().toJson(this)

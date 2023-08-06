@@ -102,6 +102,17 @@ class GameBoard(val size: Int) {
     }
 
     fun toJson(): String = Gson().toJson(this)
+    fun printMe() {
+        println(board.size)
+        board.forEach { row ->
+            var str = ""
+            row.forEach { col ->
+                if (col == null) str += "-"
+                else str += mapOf(PlayerID.PLAYER_1 to 1, PlayerID.PLAYER_2 to 2, PlayerID.PLAYER_3 to 3, PlayerID.PLAYER_4 to 4)[col]
+            }
+            println(str)
+        }
+    }
     companion object {
         fun fromJson(json: String): GameBoard = Gson().fromJson(json, GameBoard::class.java)
     }
