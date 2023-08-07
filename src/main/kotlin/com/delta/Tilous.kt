@@ -22,19 +22,55 @@ class Tilous(private val board: GameBoard) {
     // Info about players
     fun getPlayerResources() = playersResources.toMap()
     fun getPlayerStates() = playersStates.toMap()
+    fun isInGame () : List<PlayerID> = playersStates.filter {it.value == PlayerState.PLAYING}.keys.toList()
+    fun getCurrentPlayer (): PlayerID = currentPlayer
+    fun getNextPlayer(): PlayerID {
+        val currentIndex = isInGame().indexOf(currentPlayer)
+        val nextIndex = (currentIndex + 1) % isInGame().size
+        return isInGame()[nextIndex]
+        }
 
-    fun getNextPlayer(): PlayerID = TODO()
+    fun getWinner(): PlayerID? {
+        val playingPlayers = playersStates.filterValues { it == PlayerState.PLAYING }.keys.toList()
+        val lostPlayers = playersStates.filterValues { it == PlayerState.LOST }.keys.toList()
 
-    fun getWinner(): PlayerID? = TODO()
+        return when {
+            playingPlayers.isEmpty() -> null // No player is playing, no winner
+            playingPlayers.size == 1 -> {
+                // Only one player remaining, that player wins
+                val winner = playingPlayers[0]
+                playersStates[winner] = PlayerState.WON
+                gameIsOver = true
+                winner
+            }
+
+            else -> {
+                // Check if all players except one have lost
+                val remainingPlayers = playingPlayers - lostPlayers
+                if (remainingPlayers.size == 1) {
+                    val winner = remainingPlayers[0]
+                    playersStates[winner] = PlayerState.WON
+                    gameIsOver = true
+                    winner
+                } else {
+                    null // More than one player remaining, no winner yet
+                }
+            }
+        }
+    }
+
+
+    fun addResources(player: PlayerID) : Int{
+        return 1 + countProductiveCells(player)
+    }
 
     // Game checks and info
     fun isValidCellToPlace(row: Int, col: Int, player: PlayerID): Boolean = TODO()
 
     fun isProductive(row: Int, col: Int, player: PlayerID): Boolean {
-         // Works
-
         val cellOwner = getCell(row, col)
-        return cellOwner?.let { board.countFriendlyNeighbors(row, col, it) } == 1
+        return player == cellOwner &&
+            cellOwner.let { board.countFriendlyNeighbors(row, col, it) } == 1
     }
     fun isProductive(row: Int, col: Int): Boolean {
         val cellOwner = getCell(row, col)
@@ -47,18 +83,8 @@ class Tilous(private val board: GameBoard) {
     }
 
     fun getDefencePoints(row: Int, col: Int): Int {
-        val curr = getCell(row, col) ?: return 0
-
-        /*if (curr == null) return 0
-        var count = 0
-        for (i in -1..1) {
-            for (j in -1..1) {
-                if (getCell(row + i, col + j) === curr) count++
-            }
-        }
-        return Math.max(0, count - 2) + 1*/
-
-        return Math.max(0, board.countFriendlyNeighborsCorners(row, col, curr) - 2);
+        val curr = getCell(row, col) ?: return 1
+        return Math.max(0, board.countFriendlyNeighborsCorners(row, col, curr) - 2) + 1;
     }
 
     private fun countCellsWithCondition(condition: (Int, Int) -> Boolean): Int = TODO()
