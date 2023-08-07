@@ -113,12 +113,4 @@ class GameBoard(val size: Int) {
     companion object {
         fun fromJson(json: String): GameBoard = Gson().fromJson(json, GameBoard::class.java)
     }
-    fun ableToPlaceCell(row: Int, col: Int, player: PlayerID, resurses: Int) {
-        val friendlyNeighbours = countFriendlyNeighbors(row, col, player)
-        if friendlyNeighbours > 0 {
-            getCellColor(row: Int, col: Int)
-        } else {
-            return "isNotAbleToPlaceCell"
-        }
-    }
 }
