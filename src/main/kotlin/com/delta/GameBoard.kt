@@ -103,7 +103,6 @@ class GameBoard(val size: Int) {
 
     fun toJson(): String = Gson().toJson(this)
     fun printMe() {
-        println(board.size)
         board.forEach { row ->
             var str = ""
             row.forEach { col ->

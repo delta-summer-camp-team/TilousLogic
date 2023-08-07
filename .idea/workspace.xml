@@ -5,7 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8268dabb-b4ad-4fdc-9181-cc5946d45380" name="Changes" comment="Added Documentation. Fixed isSurroundedByFriendlies.&#10;&#10;GameBoard.kt has been tested and works as Intended.">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Main.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/delta/GameBoard.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/delta/GameBoard.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/delta/Tilous.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/delta/Tilous.kt" afterDir="false" />
