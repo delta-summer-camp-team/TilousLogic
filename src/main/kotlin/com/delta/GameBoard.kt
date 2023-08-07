@@ -78,7 +78,7 @@ class GameBoard(val size: Int) {
      * Returns a number of enemy neighbors on the borders of this tile.
      * */
     fun countEnemyNeighbors(row: Int, col: Int, player: PlayerID): Int{
-        return getNeighbors(row, col).count { (x, y) -> get(x, y) != player && get(x, y) != null}
+        return getCornersNeighbors(row, col).count { (x, y) -> get(x, y) != player && get(x, y) != null}
     }
     /**
      * Returns a boolean if this tile is surrounded by friendly tiles.
@@ -100,6 +100,16 @@ class GameBoard(val size: Int) {
     }
 
     fun toJson(): String = Gson().toJson(this)
+    fun printMe() {
+        board.forEach { row ->
+            var str = ""
+            row.forEach { col ->
+                if (col == null) str += "-"
+                else str += mapOf(PlayerID.PLAYER_1 to 1, PlayerID.PLAYER_2 to 2, PlayerID.PLAYER_3 to 3, PlayerID.PLAYER_4 to 4)[col]
+            }
+            println(str)
+        }
+    }
     companion object {
         fun fromJson(json: String): GameBoard = Gson().fromJson(json, GameBoard::class.java)
     }

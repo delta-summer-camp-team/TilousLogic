@@ -1,7 +1,9 @@
 package com.delta
 
 import com.google.gson.Gson
+
 import kotlin.math.max
+import java.util.LinkedList
 
 class Tilous(private val board: GameBoard) {
     private val playersResources = PlayerID.values().associateWith { 1 }.toMutableMap()
@@ -22,8 +24,13 @@ class Tilous(private val board: GameBoard) {
     // Info about players
     fun getPlayerResources() = playersResources.toMap()
     fun getPlayerStates() = playersStates.toMap()
-
-    fun getNextPlayer(): PlayerID = TODO()
+    fun isInGame () : List<PlayerID> = playersStates.filter {it.value == PlayerState.PLAYING}.keys.toList()
+    fun getCurrentPlayer (): PlayerID = currentPlayer
+    fun getNextPlayer(): PlayerID {
+        val currentIndex = isInGame().indexOf(currentPlayer)
+        val nextIndex = (currentIndex + 1) % isInGame().size
+        return isInGame()[nextIndex]
+        }
 
     fun getWinner(): PlayerID? {
         val playingPlayers = playersStates.filterValues { it == PlayerState.PLAYING }.keys.toList()
@@ -91,9 +98,16 @@ class Tilous(private val board: GameBoard) {
         val cellOwner = getCell(row, col)
         return cellOwner?.let { board.countFriendlyNeighbors(row, col, it) } == 1
     }
-    fun isSuperStable(row: Int, col: Int): Boolean = TODO()
+    fun isSuperStable(row: Int, col: Int): Boolean {
+        val curr = getCell(row, col) ?: return false
+        return (row == 0 || row == getBoardSize() - 1) && (col == 0 || col == getBoardSize() - 1)
+                || board.countFriendlyNeighborsCorners(row, col, curr) == 8
+    }
 
-    fun getDefencePoints(row: Int, col: Int): Int = TODO()
+    fun getDefencePoints(row: Int, col: Int): Int {
+        val curr = getCell(row, col) ?: return 1
+        return Math.max(0, board.countFriendlyNeighborsCorners(row, col, curr) - 2) + 1;
+    }
 
     private fun countCellsWithCondition(condition: (Int, Int) -> Boolean): Int = TODO()
     fun countProductiveCells(player: PlayerID): Int {
@@ -173,7 +187,43 @@ class Tilous(private val board: GameBoard) {
     fun finishPlayersTurn(player: PlayerID): Boolean = false
 
     // Internal game actions
-    private fun removeUnstableCells(): Nothing = TODO()
+    fun removeUnstableCells() {
+        val bsz = getBoardSize();
+        val markers = GameBoard(bsz);
+
+        for (row in 0 until getBoardSize()) {
+            for (col in 0 until getBoardSize()) {
+                val baseOwner = getCell(row, col)
+                if (baseOwner == null || !isSuperStable(row, col)) continue
+
+                val queue: LinkedList<Pair<Int, Int>> = LinkedList()
+                markers[row, col] = baseOwner
+                queue.add(Pair(row, col))
+                while (queue.size > 0) {
+                    val (currRow, currCol) = queue.first()
+                    queue.remove()
+
+                    // Checking adjacent elements
+                    for (ai in -1..1) {
+                        for (aj in -1..1) {
+                            if ((ai + aj) % 2 == 0) continue
+                            val adjRow = currRow + ai
+                            val adjCol = currCol + aj
+
+                            if (markers[adjRow, adjCol] != baseOwner && getCell(adjRow, adjCol) == baseOwner) {
+                                markers[adjRow, adjCol] = baseOwner
+                                queue.add(Pair(adjRow, adjCol))
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        board.printMe()
+        println("")
+        markers.printMe()
+    }
     private fun updatePlayerStates(): Nothing = TODO()
 
     fun toJson() = Gson().toJson(this)
