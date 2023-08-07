@@ -1,6 +1,7 @@
 package com.delta
 
 import com.google.gson.Gson
+import kotlin.math.max
 
 class Tilous(private val board: GameBoard) {
     private val playersResources = PlayerID.values().associateWith { 1 }.toMutableMap()
@@ -59,7 +60,27 @@ class Tilous(private val board: GameBoard) {
     }
 
     // Game checks and info
-    fun isValidCellToPlace(row: Int, col: Int, player: PlayerID): Boolean = TODO()
+    fun isValidCellToPlace(row: Int, col: Int, player: PlayerID): Boolean {
+        if (board.countFriendlyNeighbors(row, col, player) == 0) {
+            return false
+        } else if ( getPlayerResources()[player] == 0 ) {
+            return false
+        } else if ( getCell(row,col) == null ) {
+            return true
+        } else {
+            val enemy = getCell(row,col)
+            if (getEnemyDefense(row, col, enemy!!) <=  getPlayerResources()[player]!!) {
+                return true
+            } else {
+                return false
+            }
+        }
+    }
+    private fun getEnemyDefense(row: Int, col: Int, enemyID: PlayerID): Int {
+        val enemy = getCell(row,col)
+        val enemyForce = board.countEnemyNeighbors(row, col, enemy!!)
+        return (1 + max(0, enemyForce - 2))
+    }
 
     fun isProductive(row: Int, col: Int, player: PlayerID): Boolean {
         val cellOwner = getCell(row, col)
@@ -119,7 +140,25 @@ class Tilous(private val board: GameBoard) {
      *
      * @return 'true' is the cell was successfully placed, 'false' if not
      */
-    fun placeCell(row: Int, col: Int, player: PlayerID): Boolean = false
+    fun placeCell(row: Int, col: Int, player: PlayerID): Boolean {
+        if (player != currentPlayer)
+            return false
+        if (isValidCellToPlace(row, col, player) == false)
+            return false
+        if (getCell(row, col) == null) {
+            board.set(row, col, player)
+            playersResources[player] = playersResources[player]!! - 1
+            return true
+        } else {
+            val enemy = getCell(row, col)
+            val defence = getEnemyDefense(row, col, enemy!!)
+            board.set(row, col, player)
+            playersResources[player] = playersResources[player]!! - defence
+            removeUnstableCells()
+            return true
+        }
+        // add fun checkEndCondition
+    }
 
     /**
      * Another main function!
