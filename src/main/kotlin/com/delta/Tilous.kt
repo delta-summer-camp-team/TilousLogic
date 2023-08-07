@@ -57,7 +57,7 @@ class Tilous(private val board: GameBoard) {
      *
      * @return 'true' is the cell was successfully placed, 'false' if not
      */
-    fun placeCell(row: Int, col: Int, player: PlayerID): Boolean = false)
+    fun placeCell(row: Int, col: Int, player: PlayerID): Boolean = false
 
     /**
      * Another main function!
