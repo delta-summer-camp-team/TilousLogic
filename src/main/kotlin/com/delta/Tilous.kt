@@ -87,15 +87,17 @@ class Tilous(private val board: GameBoard) {
         return totalProductiveCells
     }
     fun countFreeCells(): Int = TODO()
-    fun countFriendlyCells(row: Int, col:Int,player: PlayerID): Int {
+    fun countFriendlyCells(player: PlayerID): Int = TODO()
+
+    fun countFriendlyNeighboursLisa(row: Int, col:Int,player: PlayerID): Int {
         var friendlyNeighbours = 0
-        if (row != 0) && (getCell(row - 1, col) == player)
+        if ((row != 0) && (getCell(row - 1, col) == player))
             friendlyNeighbours += 1
-        if (row != (board.size-1)) && (getCell(row + 1, col) == player)
+        if ((row != (board.size-1)) && (getCell(row + 1, col) == player))
             friendlyNeighbours += 1
-        if (col != 0) && (getCell(row, col - 1) == player)
+        if ((col != 0) && (getCell(row, col - 1) == player))
             friendlyNeighbours += 1
-        if (col != (board.size-1)) && (getCell(row, col + 1) == player)
+        if ((col != (board.size-1)) && (getCell(row, col + 1) == player))
             friendlyNeighbours += 1
         return friendlyNeighbours
     }
