@@ -59,7 +59,7 @@ class Tilous(private val board: GameBoard) {
     }
 
     // Game checks and info
-    fun isValidCellToPlace(row: Int, col: Int, player: PlayerID): Boolean
+    fun isValidCellToPlace(row: Int, col: Int, player: PlayerID): Boolean = TODO()
 
     fun isProductive(row: Int, col: Int, player: PlayerID): Boolean {
         val cellOwner = getCell(row, col)
