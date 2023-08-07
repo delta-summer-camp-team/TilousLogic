@@ -1,6 +1,8 @@
 package com.delta
 
 import com.google.gson.Gson
+
+import kotlin.math.max
 import java.util.LinkedList
 
 class Tilous(private val board: GameBoard) {
@@ -65,7 +67,27 @@ class Tilous(private val board: GameBoard) {
     }
 
     // Game checks and info
-    fun isValidCellToPlace(row: Int, col: Int, player: PlayerID): Boolean = TODO()
+    fun isValidCellToPlace(row: Int, col: Int, player: PlayerID): Boolean {
+        if (board.countFriendlyNeighbors(row, col, player) == 0) {
+            return false
+        } else if ( getPlayerResources()[player] == 0 ) {
+            return false
+        } else if ( getCell(row,col) == null ) {
+            return true
+        } else {
+            val enemy = getCell(row,col)
+            if (getEnemyDefense(row, col, enemy!!) <=  getPlayerResources()[player]!!) {
+                return true
+            } else {
+                return false
+            }
+        }
+    }
+    private fun getEnemyDefense(row: Int, col: Int, enemyID: PlayerID): Int {
+        val enemy = getCell(row,col)
+        val enemyForce = board.countEnemyNeighbors(row, col, enemy!!)
+        return (1 + max(0, enemyForce - 2))
+    }
 
     fun isProductive(row: Int, col: Int, player: PlayerID): Boolean {
         val cellOwner = getCell(row, col)
@@ -102,6 +124,19 @@ class Tilous(private val board: GameBoard) {
     fun countFreeCells(): Int = TODO()
     fun countFriendlyCells(player: PlayerID): Int = TODO()
 
+    fun countFriendlyNeighboursLisa(row: Int, col:Int,player: PlayerID): Int {
+        var friendlyNeighbours = 0
+        if ((row != 0) && (getCell(row - 1, col) == player))
+            friendlyNeighbours += 1
+        if ((row != (board.size-1)) && (getCell(row + 1, col) == player))
+            friendlyNeighbours += 1
+        if ((col != 0) && (getCell(row, col - 1) == player))
+            friendlyNeighbours += 1
+        if ((col != (board.size-1)) && (getCell(row, col + 1) == player))
+            friendlyNeighbours += 1
+        return friendlyNeighbours
+    }
+
     fun getSuperStableCells(player: PlayerID): List<Pair<Int, Int>> = TODO("Later...")
     fun getUnstableCells(player: PlayerID): List<Pair<Int, Int>> = TODO("Later...")
     fun getStableCells(player: PlayerID): List<Pair<Int, Int>> = TODO("Later...")
@@ -119,7 +154,25 @@ class Tilous(private val board: GameBoard) {
      *
      * @return 'true' is the cell was successfully placed, 'false' if not
      */
-    fun placeCell(row: Int, col: Int, player: PlayerID): Boolean = false
+    fun placeCell(row: Int, col: Int, player: PlayerID): Boolean {
+        if (player != currentPlayer)
+            return false
+        if (isValidCellToPlace(row, col, player) == false)
+            return false
+        if (getCell(row, col) == null) {
+            board.set(row, col, player)
+            playersResources[player] = playersResources[player]!! - 1
+            return true
+        } else {
+            val enemy = getCell(row, col)
+            val defence = getEnemyDefense(row, col, enemy!!)
+            board.set(row, col, player)
+            playersResources[player] = playersResources[player]!! - defence
+            removeUnstableCells()
+            return true
+        }
+        // add fun checkEndCondition
+    }
 
     /**
      * Another main function!
