@@ -15,7 +15,12 @@ class Tilous(private val board: GameBoard) {
     var gameIsOver = false
         private set
 
-    /* TODO: Use "init" syntax here to place one cell for each player in the corners */
+    init {
+        board.set(0, 0, PlayerID.PLAYER_1)
+        board.set(0, board.size - 1, PlayerID.PLAYER_2)
+        board.set(board.size, 0, PlayerID.PLAYER_4)
+        board.set(board.size, board.size, PlayerID.PLAYER_3)
+    }
 
     // Info about board
     fun getCell(row: Int, col: Int): PlayerID? = board[row, col]
