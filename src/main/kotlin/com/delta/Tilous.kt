@@ -1,6 +1,7 @@
 package com.delta
 
 import com.google.gson.Gson
+import java.util.LinkedList
 
 import kotlin.math.max
 import java.util.LinkedList
@@ -66,7 +67,6 @@ class Tilous(private val board: GameBoard) {
         }
     }
 
-
     fun addResources(player: PlayerID) : Int{
         return 1 + countProductiveCells(player)
     }
@@ -88,6 +88,7 @@ class Tilous(private val board: GameBoard) {
             }
         }
     }
+    
     private fun getEnemyDefense(row: Int, col: Int, enemyID: PlayerID): Int {
         val enemy = getCell(row,col)
         val enemyForce = board.countEnemyNeighbors(row, col, enemy!!)
@@ -197,8 +198,8 @@ class Tilous(private val board: GameBoard) {
 
     // Internal game actions
     fun removeUnstableCells() {
-        val bsz = getBoardSize();
-        val markers = GameBoard(bsz);
+        val bsz = getBoardSize()
+        val markers = GameBoard(bsz)
 
         for (row in 0 until getBoardSize()) {
             for (col in 0 until getBoardSize()) {
@@ -229,10 +230,18 @@ class Tilous(private val board: GameBoard) {
             }
         }
 
-        board.printMe()
-        println("")
-        markers.printMe()
+        //board.printMe()
+        //println("")
+
+        for (i in 0 until getBoardSize()) {
+            for (j in 0 until getBoardSize()) {
+                if (markers[i, j] == null) board.set(i, j, null);
+            }
+        }
+        //board.printMe()
+
     }
+    
     private fun updatePlayerStates(): Nothing = TODO()
 
     fun toJson() = Gson().toJson(this)
