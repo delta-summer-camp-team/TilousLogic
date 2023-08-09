@@ -112,16 +112,14 @@ class Tilous(private val board: GameBoard) {
         val bsz = getBoardSize();
         val markers = GameBoard(bsz);
 
-        // Checking all 4 bases
-        for (i in 0..1) {
-            for (j in 0..1) {
-                val startRow = i * (bsz - 1)
-                val startCol = j * (bsz - 1)
-                val baseOwner = getCell(startRow, startCol) ?: continue
+        for (row in 0 until getBoardSize()) {
+            for (col in 0 until getBoardSize()) {
+                val baseOwner = getCell(row, col)
+                if (baseOwner == null || !isSuperStable(row, col)) continue
 
                 val queue: LinkedList<Pair<Int, Int>> = LinkedList()
-                markers[startRow, startCol] = baseOwner
-                queue.add(Pair(startRow, startCol))
+                markers[row, col] = baseOwner
+                queue.add(Pair(row, col))
                 while (queue.size > 0) {
                     val (currRow, currCol) = queue.first()
                     queue.remove()
@@ -144,6 +142,7 @@ class Tilous(private val board: GameBoard) {
         }
 
         board.printMe()
+        println("")
         markers.printMe()
     }
     private fun updatePlayerStates(): Nothing = TODO()

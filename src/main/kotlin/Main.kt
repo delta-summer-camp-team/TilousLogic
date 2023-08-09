@@ -1,26 +1,25 @@
 import com.delta.*
+import com.google.gson.Gson
 
 fun main() {
-    val board = GameBoard(5)
+    val board = GameBoard(10)
     val tilous = Tilous(board)
+}
 
-<<<<<<< HEAD
-    board.set(0, 0, PlayerID.PLAYER_1);
-    board.set(1, 1, PlayerID.PLAYER_1);
-=======
 
-    board.set(0, 0, PlayerID.PLAYER_1)
-    board.set(0, 1, PlayerID.PLAYER_1)
-    board.set(2, 2, PlayerID.PLAYER_1);
-    board.set(1, 1, PlayerID.PLAYER_1);
-    board.set(2, 1, PlayerID.PLAYER_1);
-    board.set(3, 1, PlayerID.PLAYER_1);
-    board.set(3, 2, PlayerID.PLAYER_1);
-    board.set(3, 3, PlayerID.PLAYER_1);
-    board.set(2, 3, PlayerID.PLAYER_1);
-    board.set(1, 3, PlayerID.PLAYER_1);
-    board.set(1, 2, PlayerID.PLAYER_1);
->>>>>>> 40deaef (almost removeUnstableCells())
+/* OLD
+
+//    board.set(0, 0, PlayerID.PLAYER_1)
+//    board.set(0, 1, PlayerID.PLAYER_1)
+//    board.set(2, 2, PlayerID.PLAYER_1)
+//    board.set(1, 1, PlayerID.PLAYER_1)
+//    board.set(2, 1, PlayerID.PLAYER_1)
+//    board.set(3, 1, PlayerID.PLAYER_1)
+//    board.set(3, 2, PlayerID.PLAYER_1)
+//    board.set(3, 3, PlayerID.PLAYER_1)
+//    board.set(2, 3, PlayerID.PLAYER_1)
+//    board.set(1, 3, PlayerID.PLAYER_1)
+//    board.set(1, 2, PlayerID.PLAYER_1)
 
 //    board.board.forEach {
 //        var str = ""
@@ -29,6 +28,6 @@ fun main() {
 //        }
 //        println(str)
 //    }
-    //println(tilous.isSuperStable(2, 2))
-    tilous.removeUnstableCells()
-}
+//println(tilous.isSuperStable(2, 2))
+
+*/
