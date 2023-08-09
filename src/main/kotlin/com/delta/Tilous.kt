@@ -18,8 +18,8 @@ class Tilous(private val board: GameBoard) {
     init {
         board.set(0, 0, PlayerID.PLAYER_1)
         board.set(0, board.size - 1, PlayerID.PLAYER_2)
-        board.set(board.size, 0, PlayerID.PLAYER_4)
-        board.set(board.size, board.size, PlayerID.PLAYER_3)
+        board.set(board.size - 1, 0, PlayerID.PLAYER_4)
+        board.set(board.size - 1, board.size - 1, PlayerID.PLAYER_3)
     }
 
     // Info about board
