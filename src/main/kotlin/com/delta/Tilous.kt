@@ -109,8 +109,8 @@ class Tilous(private val board: GameBoard) {
 
     // Internal game actions
     fun removeUnstableCells() {
-        val bsz = getBoardSize();
-        val markers = GameBoard(bsz);
+        val bsz = getBoardSize()
+        val markers = GameBoard(bsz)
 
         for (row in 0 until getBoardSize()) {
             for (col in 0 until getBoardSize()) {
@@ -141,9 +141,15 @@ class Tilous(private val board: GameBoard) {
             }
         }
 
-        board.printMe()
-        println("")
-        markers.printMe()
+        //board.printMe()
+        //println("")
+
+        for (i in 0 until getBoardSize()) {
+            for (j in 0 until getBoardSize()) {
+                if (markers[i, j] == null) board.set(i, j, null);
+            }
+        }
+        //board.printMe()
     }
     private fun updatePlayerStates(): Nothing = TODO()
 

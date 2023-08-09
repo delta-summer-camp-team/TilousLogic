@@ -32,7 +32,7 @@ class GameBoard(val size: Int) {
      *
      * To set cells inside methods of this class, use `this[i, j] = ...`.
      */
-    operator fun set(row: Int, col: Int, player: PlayerID) {
+    operator fun set(row: Int, col: Int, player: PlayerID?) {
         if (isValidCoordinate(row, col)){  // Works as intended
             board[row][col] = player
         } else {
@@ -106,7 +106,7 @@ class GameBoard(val size: Int) {
         board.forEach { row ->
             var str = ""
             row.forEach { col ->
-                if (col == null) str += "-"
+                if (col == null) str += "."
                 else str += mapOf(PlayerID.PLAYER_1 to 1, PlayerID.PLAYER_2 to 2, PlayerID.PLAYER_3 to 3, PlayerID.PLAYER_4 to 4)[col]
             }
             println(str)
