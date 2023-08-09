@@ -1,10 +1,8 @@
 package com.delta
 
 import com.google.gson.Gson
-import java.util.LinkedList
-
+import java.util.*
 import kotlin.math.max
-import java.util.LinkedList
 
 class Tilous(private val board: GameBoard) {
     private val playersResources = PlayerID.values().associateWith { 1 }.toMutableMap()
