@@ -3,6 +3,9 @@ package com.delta
 import com.google.gson.Gson
 import java.util.LinkedList
 
+import kotlin.math.max
+import java.util.LinkedList
+
 class Tilous(private val board: GameBoard) {
     private val playersResources = PlayerID.values().associateWith { 1 }.toMutableMap()
     private val playersStates = PlayerID.values().associateWith { PlayerState.PLAYING }.toMutableMap()
@@ -13,7 +16,12 @@ class Tilous(private val board: GameBoard) {
     var gameIsOver = false
         private set
 
-    /* TODO: Use "init" syntax here to place one cell for each player in the corners */
+    init {
+        board.set(0, 0, PlayerID.PLAYER_1)
+        board.set(0, board.size - 1, PlayerID.PLAYER_2)
+        board.set(board.size - 1, 0, PlayerID.PLAYER_4)
+        board.set(board.size - 1, board.size - 1, PlayerID.PLAYER_3)
+    }
 
     // Info about board
     fun getCell(row: Int, col: Int): PlayerID? = board[row, col]
@@ -22,19 +30,75 @@ class Tilous(private val board: GameBoard) {
     // Info about players
     fun getPlayerResources() = playersResources.toMap()
     fun getPlayerStates() = playersStates.toMap()
+    fun isInGame () : List<PlayerID> = playersStates.filter {it.value == PlayerState.PLAYING}.keys.toList()
+    fun getCurrentPlayer (): PlayerID = currentPlayer
+    fun getNextPlayer(): PlayerID {
+        val currentIndex = isInGame().indexOf(currentPlayer)
+        val nextIndex = (currentIndex + 1) % isInGame().size
+        return isInGame()[nextIndex]
+        }
 
-    fun getNextPlayer(): PlayerID = TODO()
+    fun getWinner(): PlayerID? {
+        val playingPlayers = playersStates.filterValues { it == PlayerState.PLAYING }.keys.toList()
+        val lostPlayers = playersStates.filterValues { it == PlayerState.LOST }.keys.toList()
 
-    fun getWinner(): PlayerID? = TODO()
+        return when {
+            playingPlayers.isEmpty() -> null // No player is playing, no winner
+            playingPlayers.size == 1 -> {
+                // Only one player remaining, that player wins
+                val winner = playingPlayers[0]
+                playersStates[winner] = PlayerState.WON
+                gameIsOver = true
+                winner
+            }
+
+            else -> {
+                // Check if all players except one have lost
+                val remainingPlayers = playingPlayers - lostPlayers
+                if (remainingPlayers.size == 1) {
+                    val winner = remainingPlayers[0]
+                    playersStates[winner] = PlayerState.WON
+                    gameIsOver = true
+                    winner
+                } else {
+                    null // More than one player remaining, no winner yet
+                }
+            }
+        }
+    }
+
+    fun addResources(player: PlayerID) : Int{
+        return 1 + countProductiveCells(player)
+    }
 
     // Game checks and info
-    fun isValidCellToPlace(row: Int, col: Int, player: PlayerID): Boolean = TODO()
+    fun isValidCellToPlace(row: Int, col: Int, player: PlayerID): Boolean {
+        if (board.countFriendlyNeighbors(row, col, player) == 0) {
+            return false
+        } else if ( getPlayerResources()[player] == 0 ) {
+            return false
+        } else if ( getCell(row,col) == null ) {
+            return true
+        } else {
+            val enemy = getCell(row,col)
+            if (getEnemyDefense(row, col, enemy!!) <=  getPlayerResources()[player]!!) {
+                return true
+            } else {
+                return false
+            }
+        }
+    }
+    
+    private fun getEnemyDefense(row: Int, col: Int, enemyID: PlayerID): Int {
+        val enemy = getCell(row,col)
+        val enemyForce = board.countEnemyNeighbors(row, col, enemy!!)
+        return (1 + max(0, enemyForce - 2))
+    }
 
     fun isProductive(row: Int, col: Int, player: PlayerID): Boolean {
-         // Works
-
         val cellOwner = getCell(row, col)
-        return cellOwner?.let { board.countFriendlyNeighbors(row, col, it) } == 1
+        return player == cellOwner &&
+            cellOwner.let { board.countFriendlyNeighbors(row, col, it) } == 1
     }
     fun isProductive(row: Int, col: Int): Boolean {
         val cellOwner = getCell(row, col)
@@ -48,16 +112,6 @@ class Tilous(private val board: GameBoard) {
 
     fun getDefencePoints(row: Int, col: Int): Int {
         val curr = getCell(row, col) ?: return 1
-
-        /*if (curr == null) return 0
-        var count = 0
-        for (i in -1..1) {
-            for (j in -1..1) {
-                if (getCell(row + i, col + j) === curr) count++
-            }
-        }
-        return Math.max(0, count - 2) + 1*/
-
         return Math.max(0, board.countFriendlyNeighborsCorners(row, col, curr) - 2) + 1;
     }
 
@@ -76,6 +130,19 @@ class Tilous(private val board: GameBoard) {
     fun countFreeCells(): Int = TODO()
     fun countFriendlyCells(player: PlayerID): Int = TODO()
 
+    fun countFriendlyNeighboursLisa(row: Int, col:Int,player: PlayerID): Int {
+        var friendlyNeighbours = 0
+        if ((row != 0) && (getCell(row - 1, col) == player))
+            friendlyNeighbours += 1
+        if ((row != (board.size-1)) && (getCell(row + 1, col) == player))
+            friendlyNeighbours += 1
+        if ((col != 0) && (getCell(row, col - 1) == player))
+            friendlyNeighbours += 1
+        if ((col != (board.size-1)) && (getCell(row, col + 1) == player))
+            friendlyNeighbours += 1
+        return friendlyNeighbours
+    }
+
     fun getSuperStableCells(player: PlayerID): List<Pair<Int, Int>> = TODO("Later...")
     fun getUnstableCells(player: PlayerID): List<Pair<Int, Int>> = TODO("Later...")
     fun getStableCells(player: PlayerID): List<Pair<Int, Int>> = TODO("Later...")
@@ -93,7 +160,26 @@ class Tilous(private val board: GameBoard) {
      *
      * @return 'true' is the cell was successfully placed, 'false' if not
      */
-    fun placeCell(row: Int, col: Int, player: PlayerID): Boolean = false
+    fun placeCell(row: Int, col: Int, player: PlayerID): Boolean {
+        if (player != currentPlayer)
+            return false
+        if (isValidCellToPlace(row, col, player) == false)
+            return false
+        if (getCell(row, col) == null) {
+            board.set(row, col, player)
+            playersResources[player] = playersResources[player]!! - 1
+            checkEndGameCondition()
+            return true
+        } else {
+            val enemy = getCell(row, col)
+            val defence = getEnemyDefense(row, col, enemy!!)
+            board.set(row, col, player)
+            playersResources[player] = playersResources[player]!! - defence
+            removeUnstableCells()
+            checkEndGameCondition()
+            return true
+        }
+    }
 
     /**
      * Another main function!
@@ -105,7 +191,10 @@ class Tilous(private val board: GameBoard) {
      *
      * @return 'true' if succeeded
      */
-    fun finishPlayersTurn(player: PlayerID): Boolean = false
+    fun finishPlayersTurn(player: PlayerID): Boolean {
+        currentPlayer = getNextPlayer()
+        return true
+    }
 
     // Internal game actions
     fun removeUnstableCells() {
@@ -150,8 +239,25 @@ class Tilous(private val board: GameBoard) {
             }
         }
         //board.printMe()
+
     }
+    
     private fun updatePlayerStates(): Nothing = TODO()
 
     fun toJson() = Gson().toJson(this)
+
+    private fun checkEndGameCondition () : Unit {
+        val n1 = countFriendlyCells(PlayerID.PLAYER_1)
+        val n2 = countFriendlyCells(PlayerID.PLAYER_2)
+        val n3 = countFriendlyCells(PlayerID.PLAYER_3)
+        val n4 = countFriendlyCells(PlayerID.PLAYER_4)
+        if ((n1 != 0 ) && (n2 == 0) && (n3 == 0) && (n4 == 0))
+            gameIsOver = true
+        if ((n1 == 0 ) && (n2 != 0) && (n3 == 0) && (n4 == 0))
+            gameIsOver = true
+        if ((n1 == 0 ) && (n2 == 0) && (n3 != 0) && (n4 == 0))
+            gameIsOver = true
+        if ((n1 == 0 ) && (n2 == 0) && (n3 == 0) && (n4 != 0))
+            gameIsOver = true
+    }
 }
