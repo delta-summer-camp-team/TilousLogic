@@ -162,6 +162,7 @@ class Tilous(private val board: GameBoard) {
         if (getCell(row, col) == null) {
             board.set(row, col, player)
             playersResources[player] = playersResources[player]!! - 1
+            checkEndGameCondition()
             return true
         } else {
             val enemy = getCell(row, col)
@@ -169,9 +170,9 @@ class Tilous(private val board: GameBoard) {
             board.set(row, col, player)
             playersResources[player] = playersResources[player]!! - defence
             removeUnstableCells()
+            checkEndGameCondition()
             return true
         }
-        // add fun checkEndCondition
     }
 
     /**
@@ -184,7 +185,10 @@ class Tilous(private val board: GameBoard) {
      *
      * @return 'true' if succeeded
      */
-    fun finishPlayersTurn(player: PlayerID): Boolean = false
+    fun finishPlayersTurn(player: PlayerID): Boolean {
+        currentPlayer = getNextPlayer()
+        return true
+    }
 
     // Internal game actions
     fun removeUnstableCells() {
@@ -227,4 +231,19 @@ class Tilous(private val board: GameBoard) {
     private fun updatePlayerStates(): Nothing = TODO()
 
     fun toJson() = Gson().toJson(this)
+
+    private fun checkEndGameCondition () : Unit {
+        val n1 = countFriendlyCells(PlayerID.PLAYER_1)
+        val n2 = countFriendlyCells(PlayerID.PLAYER_2)
+        val n3 = countFriendlyCells(PlayerID.PLAYER_3)
+        val n4 = countFriendlyCells(PlayerID.PLAYER_4)
+        if ((n1 != 0 ) && (n2 == 0) && (n3 == 0) && (n4 == 0))
+            gameIsOver = true
+        if ((n1 == 0 ) && (n2 != 0) && (n3 == 0) && (n4 == 0))
+            gameIsOver = true
+        if ((n1 == 0 ) && (n2 == 0) && (n3 != 0) && (n4 == 0))
+            gameIsOver = true
+        if ((n1 == 0 ) && (n2 == 0) && (n3 == 0) && (n4 != 0))
+            gameIsOver = true
+    }
 }
