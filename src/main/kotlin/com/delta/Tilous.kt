@@ -191,8 +191,12 @@ class Tilous(private val board: GameBoard) {
      * @return 'true' if succeeded
      */
     fun finishPlayersTurn(player: PlayerID): Boolean {
-        currentPlayer = getNextPlayer()
-        return true
+        if (currentPlayer == player) {
+                currentPlayer = getNextPlayer()
+                return true
+            } else {
+                return false
+        }
     }
 
     // Internal game actions
