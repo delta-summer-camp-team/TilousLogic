@@ -29,7 +29,6 @@ class Tilous(private val board: GameBoard) {
     fun getPlayerResources() = playersResources.toMap()
     fun getPlayerStates() = playersStates.toMap()
     fun isInGame () : List<PlayerID> = playersStates.filter {it.value == PlayerState.PLAYING}.keys.toList()
-    fun getCurrentPlayer (): PlayerID = currentPlayer
     fun getNextPlayer(): PlayerID {
         val currentIndex = isInGame().indexOf(currentPlayer)
         val nextIndex = (currentIndex + 1) % isInGame().size
