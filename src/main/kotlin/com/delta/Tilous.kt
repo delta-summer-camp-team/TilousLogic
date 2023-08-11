@@ -109,9 +109,10 @@ class Tilous(private val board: GameBoard) {
 
     fun getDefencePoints(row: Int, col: Int): Int {
         val curr = getCell(row, col) ?: return 1
-        return Math.max(0, board.countFriendlyNeighborsCorners(row, col, curr) - 2) + 1;
+        return Math.max(0, board.countFriendlyNeighborsCorners(row, col, curr) - 2) + 1
     }
 
+    // What's the condition? -George
     private fun countCellsWithCondition(condition: (Int, Int) -> Boolean): Int = TODO()
     fun countProductiveCells(player: PlayerID): Int {
         var totalProductiveCells = 0
@@ -124,8 +125,28 @@ class Tilous(private val board: GameBoard) {
         }
         return totalProductiveCells
     }
-    fun countFreeCells(): Int = TODO()
-    fun countFriendlyCells(player: PlayerID): Int = TODO()
+    fun countFreeCells(): Int {
+        var totalFreeCells = 0
+        for (x in 0 until board.size) {
+            for (y in 0 until board.size) {
+                if (getCell(x, y) == null) {
+                    totalFreeCells++
+                }
+            }
+        }
+        return totalFreeCells
+    }
+    fun countFriendlyCells(player: PlayerID): Int {
+        var totalFriendlyCells = 0
+        for (x in 0 until board.size) {
+            for (y in 0 until board.size) {
+                if (getCell(x, y) == player) {
+                    totalFriendlyCells++
+                }
+            }
+        }
+        return totalFriendlyCells
+    }
 
     fun countFriendlyNeighboursLisa(row: Int, col:Int,player: PlayerID): Int {
         var friendlyNeighbours = 0
