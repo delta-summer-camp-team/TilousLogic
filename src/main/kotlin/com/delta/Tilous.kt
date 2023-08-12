@@ -212,6 +212,8 @@ class Tilous(private val board: GameBoard) {
     fun finishPlayersTurn(player: PlayerID): Boolean {
         if (currentPlayer == player) {
                 currentPlayer = getNextPlayer()
+                val res = playersResources[player] ?: 0
+                playersResources[player] = res + countProductiveCells(player) + 1
                 return true
             } else {
                 return false
