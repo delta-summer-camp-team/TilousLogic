@@ -73,7 +73,7 @@ class GameBoard(val size: Int) {
     /**
      * Returns a number of all friendly neighbors.
      * */
-    fun countFriendlyNeighborsCorners(row: Int, col: Int, player: PlayerID): Int {
+    fun countFriendlyNeighborsCorners(row: Int, col: Int, player: PlayerID?): Int {
         return getCornersNeighbors(row, col).count { (x, y) -> get(x, y) == player}
     }
     /**

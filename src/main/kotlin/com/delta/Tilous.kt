@@ -87,8 +87,8 @@ class Tilous(private val board: GameBoard) {
     }
     
     private fun getEnemyDefense(row: Int, col: Int, enemyID: PlayerID): Int {
-        val enemy = getCell(row,col)
-        val enemyForce = board.countEnemyNeighbors(row, col, enemy!!)
+        val enemy = getCell(row,col) ?: return 1
+        val enemyForce = board.countFriendlyNeighborsCorners(row, col, enemy)
         return (1 + max(0, enemyForce - 2))
     }
 
