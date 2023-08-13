@@ -28,12 +28,12 @@ class Tilous(private val board: GameBoard) {
     // Info about players
     fun getPlayerResources() = playersResources.toMap()
     fun getPlayerStates() = playersStates.toMap()
-    fun isInGame () : List<PlayerID> = playersStates.filter {it.value == PlayerState.PLAYING}.keys.toList()
+    fun isInGame(): List<PlayerID> = playersStates.filter { it.value == PlayerState.PLAYING }.keys.toList()
     fun getNextPlayer(): PlayerID {
         val currentIndex = isInGame().indexOf(currentPlayer)
         val nextIndex = (currentIndex + 1) % isInGame().size
         return isInGame()[nextIndex]
-        }
+    }
 
     fun getWinner(): PlayerID? {
         val playingPlayers = playersStates.filterValues { it == PlayerState.PLAYING }.keys.toList()
@@ -64,7 +64,7 @@ class Tilous(private val board: GameBoard) {
         }
     }
 
-    fun addResources(player: PlayerID) : Int{
+    fun addResources(player: PlayerID): Int {
         return 1 + countProductiveCells(player)
     }
 
@@ -72,22 +72,22 @@ class Tilous(private val board: GameBoard) {
     fun isValidCellToPlace(row: Int, col: Int, player: PlayerID): Boolean {
         if (board.countFriendlyNeighbors(row, col, player) == 0) {
             return false
-        } else if ( getPlayerResources()[player] == 0 ) {
+        } else if (getPlayerResources()[player] == 0) {
             return false
-        } else if ( getCell(row,col) == null ) {
+        } else if (getCell(row, col) == null) {
             return true
         } else {
-            val enemy = getCell(row,col)
-            if (getEnemyDefense(row, col, enemy!!) <=  getPlayerResources()[player]!!) {
+            val enemy = getCell(row, col)
+            if (getEnemyDefense(row, col, enemy!!) <= getPlayerResources()[player]!!) {
                 return true
             } else {
                 return false
             }
         }
     }
-    
+
     private fun getEnemyDefense(row: Int, col: Int, enemyID: PlayerID): Int {
-        val enemy = getCell(row,col) ?: return 1
+        val enemy = getCell(row, col) ?: return 1
         val enemyForce = board.countFriendlyNeighborsCorners(row, col, enemy)
         return (1 + max(0, enemyForce - 2))
     }
@@ -95,12 +95,14 @@ class Tilous(private val board: GameBoard) {
     fun isProductive(row: Int, col: Int, player: PlayerID): Boolean {
         val cellOwner = getCell(row, col)
         return player == cellOwner &&
-            cellOwner.let { board.countFriendlyNeighbors(row, col, it) } == 1
+                cellOwner.let { board.countFriendlyNeighbors(row, col, it) } == 1
     }
+
     fun isProductive(row: Int, col: Int): Boolean {
         val cellOwner = getCell(row, col)
         return cellOwner?.let { board.countFriendlyNeighbors(row, col, it) } == 1
     }
+
     fun isSuperStable(row: Int, col: Int): Boolean {
         val curr = getCell(row, col) ?: return false
         return (row == 0 || row == getBoardSize() - 1) && (col == 0 || col == getBoardSize() - 1)
@@ -125,6 +127,7 @@ class Tilous(private val board: GameBoard) {
         }
         return totalProductiveCells
     }
+
     fun countFreeCells(): Int {
         var totalFreeCells = 0
         for (x in 0 until board.size) {
@@ -136,6 +139,7 @@ class Tilous(private val board: GameBoard) {
         }
         return totalFreeCells
     }
+
     fun countFriendlyCells(player: PlayerID): Int {
         var totalFriendlyCells = 0
         for (x in 0 until board.size) {
@@ -148,15 +152,15 @@ class Tilous(private val board: GameBoard) {
         return totalFriendlyCells
     }
 
-    fun countFriendlyNeighboursLisa(row: Int, col:Int,player: PlayerID): Int {
+    fun countFriendlyNeighboursLisa(row: Int, col: Int, player: PlayerID): Int {
         var friendlyNeighbours = 0
         if ((row != 0) && (getCell(row - 1, col) == player))
             friendlyNeighbours += 1
-        if ((row != (board.size-1)) && (getCell(row + 1, col) == player))
+        if ((row != (board.size - 1)) && (getCell(row + 1, col) == player))
             friendlyNeighbours += 1
         if ((col != 0) && (getCell(row, col - 1) == player))
             friendlyNeighbours += 1
-        if ((col != (board.size-1)) && (getCell(row, col + 1) == player))
+        if ((col != (board.size - 1)) && (getCell(row, col + 1) == player))
             friendlyNeighbours += 1
         return friendlyNeighbours
     }
@@ -211,12 +215,12 @@ class Tilous(private val board: GameBoard) {
      */
     fun finishPlayersTurn(player: PlayerID): Boolean {
         if (currentPlayer == player) {
-                currentPlayer = getNextPlayer()
-                val res = playersResources[player] ?: 0
-                playersResources[player] = res + countProductiveCells(player) + 1
-                return true
-            } else {
-                return false
+            currentPlayer = getNextPlayer()
+            val res = playersResources[player] ?: 0
+            playersResources[player] = res + countProductiveCells(player) + 1
+            return true
+        } else {
+            return false
         }
     }
 
@@ -265,23 +269,30 @@ class Tilous(private val board: GameBoard) {
         //board.printMe()
 
     }
-    
+
     private fun updatePlayerStates(): Nothing = TODO()
 
     fun toJson() = Gson().toJson(this)
 
-    private fun checkEndGameCondition () : Unit {
+    private fun checkEndGameCondition(): Unit {
         val n1 = countFriendlyCells(PlayerID.PLAYER_1)
         val n2 = countFriendlyCells(PlayerID.PLAYER_2)
         val n3 = countFriendlyCells(PlayerID.PLAYER_3)
         val n4 = countFriendlyCells(PlayerID.PLAYER_4)
-        if ((n1 != 0 ) && (n2 == 0) && (n3 == 0) && (n4 == 0))
+
+        for (player in playersStates.keys) {
+            if (countFriendlyCells(player) == 0) {
+                playersStates[player] = PlayerState.LOST
+            }
+        }
+
+        if ((n1 != 0) && (n2 == 0) && (n3 == 0) && (n4 == 0))
             gameIsOver = true
-        if ((n1 == 0 ) && (n2 != 0) && (n3 == 0) && (n4 == 0))
+        if ((n1 == 0) && (n2 != 0) && (n3 == 0) && (n4 == 0))
             gameIsOver = true
-        if ((n1 == 0 ) && (n2 == 0) && (n3 != 0) && (n4 == 0))
+        if ((n1 == 0) && (n2 == 0) && (n3 != 0) && (n4 == 0))
             gameIsOver = true
-        if ((n1 == 0 ) && (n2 == 0) && (n3 == 0) && (n4 != 0))
+        if ((n1 == 0) && (n2 == 0) && (n3 == 0) && (n4 != 0))
             gameIsOver = true
     }
 }
