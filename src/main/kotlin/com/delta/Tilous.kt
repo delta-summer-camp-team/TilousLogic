@@ -70,15 +70,18 @@ class Tilous(private val board: GameBoard) {
 
     // Game checks and info
     fun isValidCellToPlace(row: Int, col: Int, player: PlayerID): Boolean {
-        if (board.countFriendlyNeighbors(row, col, player) == 0) {
+        if (
+            player != currentPlayer ||
+            board.countFriendlyNeighbors(row, col, player) == 0 ||
+            getCell(row, col) == player
+            ) {
             return false
         } else if (getPlayerResources()[player] == 0) {
             return false
         } else if (getCell(row, col) == null) {
             return true
         } else {
-            val enemy = getCell(row, col)
-            if (getEnemyDefense(row, col, enemy!!) <= getPlayerResources()[player]!!) {
+            if (getEnemyDefense(row, col) <= getPlayerResources()[player]!!) {
                 return true
             } else {
                 return false
@@ -86,7 +89,7 @@ class Tilous(private val board: GameBoard) {
         }
     }
 
-    private fun getEnemyDefense(row: Int, col: Int, enemyID: PlayerID): Int {
+    private fun getEnemyDefense(row: Int, col: Int): Int {
         val enemy = getCell(row, col) ?: return 1
         val enemyForce = board.countFriendlyNeighborsCorners(row, col, enemy)
         return (1 + max(0, enemyForce - 2))
@@ -193,8 +196,7 @@ class Tilous(private val board: GameBoard) {
             checkEndGameCondition()
             return true
         } else {
-            val enemy = getCell(row, col)
-            val defence = getEnemyDefense(row, col, enemy!!)
+            val defence = getEnemyDefense(row, col)
             board.set(row, col, player)
             playersResources[player] = playersResources[player]!! - defence
             removeUnstableCells()
